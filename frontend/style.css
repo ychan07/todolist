@@ -156,3 +156,175 @@ body {
   cursor: pointer;
   font-family: inherit;
 }
+
+/* ========== Todo List 페이지 ========== */
+.todo-page {
+  min-height: 100vh;
+  background: #f8f9fa;
+  color: #1a1a1a;
+}
+
+.todo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 48px 12px;
+}
+
+.todo-header__title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #111;
+}
+
+.todo-header__account {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+.todo-header__avatar {
+  flex-shrink: 0;
+}
+
+.todo-header__name {
+  font-weight: 700;
+  color: #4b5563;
+}
+
+.todo-header__sep {
+  color: #9ca3af;
+}
+
+.todo-header__logout {
+  color: #6b7280;
+  text-decoration: none;
+  font-weight: 400;
+}
+
+.todo-board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  padding: 24px 48px 48px;
+  align-items: start;
+}
+
+.todo-column {
+  background: #e3f2fd;
+  border-radius: 24px;
+  padding: 22px 24px 28px;
+  min-height: 420px;
+}
+
+.todo-column__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 32px;
+}
+
+.todo-column__title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.01em;
+}
+
+.todo-column__add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  line-height: 0;
+}
+
+.todo-column__divider {
+  border: none;
+  border-top: 1.5px solid #1a1a1a;
+  margin: 12px 0 18px;
+}
+
+.todo-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.todo-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.todo-item__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.todo-item__title {
+  font-family: "Abhaya Libre", serif;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #111;
+  line-height: 1.35;
+}
+
+.todo-item__due {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #9ca3af;
+  line-height: 1.3;
+}
+
+.todo-item__check {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  padding: 0;
+  border: 1.5px solid #225a98;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.todo-item__check--done {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-color: #225a98;
+  background: #225a98;
+}
+
+.todo-item--failed .todo-item__title {
+  color: #9ca3af;
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+}
+
+@media (max-width: 960px) {
+  .todo-header {
+    padding: 20px 24px 8px;
+  }
+
+  .todo-board {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 16px 24px 40px;
+  }
+
+  .todo-column {
+    min-height: 0;
+  }
+}

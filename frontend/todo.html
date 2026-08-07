@@ -7,7 +7,7 @@
     <title>To Do List</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Chocolate+Classical+Sans&family=Abhaya+Libre:wght@800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chocolate+Classical+Sans&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -15,7 +15,6 @@
     <header class="todo-header">
         <h1 class="todo-header__title">To Do List</h1>
         <div class="todo-header__account">
-
             <!--사용자 로고 쪽 svg이미지, ai로 만듬-->
             <svg class="todo-header__avatar" width="28" height="28" viewBox="0 0 28 28" fill="none">
                 <circle cx="14" cy="14" r="13" stroke="#6B7280" stroke-width="1.5" />
@@ -32,21 +31,18 @@
     </header>
 
     <main class="todo-board">
-        <section class="todo-column">
+        <section class="todo-column" data-column="pending">
             <div class="todo-column__head">
                 <h2 class="todo-column__title">to do</h2>
                 <button class="todo-column__add" type="button">
-
                     <!-- +버튼 이미지, ai로 만듬-->
                     <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
                         <circle cx="14" cy="14" r="13" stroke="#225A98" stroke-width="1.5" />
                         <path d="M14 9v10M9 14h10" stroke="#225A98" stroke-width="1.5" stroke-linecap="round" />
                     </svg>
                     <!-- +버튼 이미지, ai로 만듬-->
-
                 </button>
             </div>
-
             <hr class="todo-column__divider" />
             <ul class="todo-list">
                 <li class="todo-item">
@@ -54,12 +50,12 @@
                         <span class="todo-item__title">테스크1</span>
                         <span class="todo-item__due">기간</span>
                     </div>
-                    <button class="todo-item__check" type="button" aria-label="완료 표시"></button>
+                    <button class="todo-item__check" type="button"></button>
                 </li>
             </ul>
         </section>
 
-        <section class="todo-column">
+        <section class="todo-column" data-column="completed">
             <div class="todo-column__head">
                 <h2 class="todo-column__title">end to do</h2>
             </div>
@@ -67,9 +63,9 @@
             <ul class="todo-list">
                 <li class="todo-item todo-item--done">
                     <div class="todo-item__body">
-                        <span class="todo-item__title">테크스2</span>
+                        <span class="todo-item__title">테스크2</span>
                     </div>
-                    <button class="todo-item__check todo-item__check--done" type="button" aria-label="완료 취소">
+                    <button class="todo-item__check todo-item__check--done" type="button">
                         <!-- 버튼 이미지, ai로 만듬-->
                         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                             <path d="M3 7.2l2.8 2.8L11 4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"
@@ -81,7 +77,7 @@
             </ul>
         </section>
 
-        <section class="todo-column">
+        <section class="todo-column" data-column="failed">
             <div class="todo-column__head">
                 <h2 class="todo-column__title">not end to do</h2>
             </div>
@@ -91,11 +87,25 @@
                     <div class="todo-item__body">
                         <span class="todo-item__title">테스크3</span>
                     </div>
-                    <button class="todo-item__check" type="button" aria-label="완료 표시"></button>
+                    <button class="todo-item__check" type="button"></button>
                 </li>
             </ul>
         </section>
     </main>
+
+    <div class="todo-modal" id="todoModal" hidden>
+        <div class="todo-modal__backdrop" data-modal-dismiss></div>
+        <div class="todo-modal__dialog">
+            <p class="todo-modal__title" id="todoModalTitle"></p>
+            <p class="todo-modal__desc" id="todoModalDesc"></p>
+            <div class="todo-modal__actions">
+                <button class="todo-modal__btn" type="button" data-modal-dismiss>아니오</button>
+                <button class="todo-modal__btn" type="button" data-modal-confirm>예</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="todo.js"></script>
 </body>
 
 </html>

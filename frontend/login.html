@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 - To Do List</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chocolate+Classical+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main class="login">
+        <h1 class="login__title">To Do List</h1>
+
+        <form class="login__form" action="#" method="post">
+            <div class="field">
+                <label class="field__label" for="userId">아이디</label>
+                <input class="field__input" type="text" id="userId" name="userId" autocomplete="username">
+            </div>
+
+            <div class="field">
+                <label class="field__label" for="password">패스워드</label>
+                <input class="field__input" type="password" id="password" name="password" autocomplete="current-password">
+            </div>
+
+            <button class="btn btn--primary login__submit" type="submit">로그인</button>
+        </form>
+    </main>
+    <script src="main.js"></script>
+</body>
+
+</html>

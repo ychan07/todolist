@@ -1,0 +1,25 @@
+todolist 작성 페이지 
+-to do
+    -리스트에 테스크 명 눌렀을 시 확인 팝업
+    -테스크 등록
+    -테스크 삭제
+    -테스크 체크 시에 end to do로 이동
+-end to do 
+    -체크 풀면 다시 to do로 이동
+
+-not end to do
+    -기간 내에 못 완료할 시 옮기고 회색,줄 긋기
+
+
+
+
+
+프레임워크 
+    -maria db
+    -django
+
+
+    두가지 중 선택
+
+        -django가 html 서빙하고 폼 POST
+        -프론트 html그대로 두고 django API

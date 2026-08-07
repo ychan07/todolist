@@ -89,7 +89,7 @@ body {
   box-shadow: 0 2px 8px rgba(43, 90, 145, 0.08);
 }
 
-/* 로그인 페이지 디자인 */
+/* 로그인 페이지 디자인, 회원가입  페이지에 재사용 */
 .login {
   min-height: 100vh;
   display: flex;

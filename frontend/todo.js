@@ -16,12 +16,15 @@ const detailTitle = document.getElementById("detailTitle");
 const detailDue = document.getElementById("detailDue");
 const detailDeleteBtn = document.getElementById("detailDeleteBtn");
 const deleteModal = document.getElementById("deleteModal");
+const editModal = document.getElementById("editModal");
+const editTitleInput = document.getElementById("editTitleInput");
+const editDueInput = document.getElementById("editDueInput");
 
 let pendingUncheckItem = null; //모달용 임시변수
 let detailItem = null; //디테일 모달_임시변수
 
 function anyModalOpen() {
-  return !modal.hidden || !detailModal.hidden || !deleteModal.hidden;
+  return !modal.hidden || !detailModal.hidden || !deleteModal.hidden || !editModal.hidden;
 }
 
 function syncBodyScroll() {
@@ -100,11 +103,10 @@ function openDetailModal(item) {
   detailDeleteBtn.classList.remove("is-muted");
   detailModal.hidden = false;
   syncBodyScroll();
-  positionDetailModal(item);
+  positionAtItem(detailModal.querySelector(".detail-modal__dialog"), item);
 }
-//상세보기 모달의 위치를 조정하는 함수, 생각보다 위치 조정이 생각대로 바뀌지 않아서 함수를 새롭게 만듬(ai의 도움을 받음)
-function positionDetailModal(item) {
-  const dialog = detailModal.querySelector(".detail-modal__dialog");
+//상세/수정 모달 위치 조정 (ai의 도움을 받음)
+function positionAtItem(dialog, item) {
   const column = item.closest(".todo-column");
   const columnRect = column.getBoundingClientRect();
   const itemRect = item.getBoundingClientRect();
@@ -127,6 +129,7 @@ function positionDetailModal(item) {
 
 function closeDetailModal() {
   closeDeleteModal();
+  closeEditModal(false);
   detailItem = null;
   detailDeleteBtn.classList.remove("is-muted");
   detailModal.hidden = true;
@@ -151,6 +154,61 @@ function confirmDelete() {
   detailItem = null;
   deleteModal.hidden = true;
   detailDeleteBtn.classList.remove("is-muted");
+  detailModal.hidden = true;
+  syncBodyScroll();
+}
+
+function openEditModal() {
+  if (!detailItem) return;
+
+  editTitleInput.value = getTitle(detailItem);
+  editDueInput.value = getDue(detailItem);
+  detailModal.hidden = true;
+  editModal.hidden = false;
+  syncBodyScroll();
+  positionAtItem(editModal.querySelector(".edit-modal__dialog"), detailItem);
+  editTitleInput.focus();
+}
+
+function closeEditModal(reopenDetail) {
+  editModal.hidden = true;
+  if (reopenDetail && detailItem) {
+    detailTitle.textContent = getTitle(detailItem);
+    detailDue.textContent = getDue(detailItem);
+    detailModal.hidden = false;
+    positionAtItem(detailModal.querySelector(".detail-modal__dialog"), detailItem);
+  }
+  syncBodyScroll();
+}
+
+function saveEdit() {
+  if (!detailItem) return;
+
+  const title = editTitleInput.value.trim();
+  const due = editDueInput.value.trim();
+  if (!title) {
+    editTitleInput.focus();
+    return;
+  }
+
+  detailItem.querySelector(".todo-item__title").textContent = title;
+
+  let dueEl = detailItem.querySelector(".todo-item__due");
+  if (due) {
+    if (!dueEl) {
+      dueEl = document.createElement("span");
+      dueEl.className = "todo-item__due";
+      detailItem.querySelector(".todo-item__body").appendChild(dueEl);
+    }
+    dueEl.textContent = due;
+    detailItem.dataset.due = due;
+  } else if (dueEl) {
+    dueEl.remove();
+    delete detailItem.dataset.due;
+  }
+
+  editModal.hidden = true;
+  detailItem = null;
   detailModal.hidden = true;
   syncBodyScroll();
 }
@@ -195,6 +253,11 @@ modal.addEventListener("click", (event) => {
 });
 
 detailModal.addEventListener("click", (event) => {
+  if (event.target.closest(".detail-modal__edit")) {
+    openEditModal();
+    return;
+  }
+
   if (event.target.closest(".detail-modal__delete")) {
     openDeleteModal();
     return;
@@ -220,11 +283,27 @@ deleteModal.addEventListener("click", (event) => {
   }
 });
 
+editModal.addEventListener("click", (event) => {
+  if (event.target.closest("[data-edit-cancel]")) {
+    closeEditModal(true);
+    return;
+  }
+
+  if (event.target.closest("[data-edit-save]")) {
+    saveEdit();
+  }
+});
+
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
 
   if (!deleteModal.hidden) {
     closeDeleteModal();
+    return;
+  }
+
+  if (!editModal.hidden) {
+    closeEditModal(true);
     return;
   }
 

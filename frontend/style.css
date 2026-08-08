@@ -526,6 +526,92 @@ body {
   color: #9ca3af;
 }
 
+/* 수정 모달 */
+.edit-modal[hidden] {
+  display: none;
+}
+
+.edit-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 115;
+}
+
+.edit-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+}
+
+.edit-modal__dialog {
+  position: fixed;
+  width: 300px;
+  padding: 28px 24px 22px;
+  background: #fff;
+  border: 1.5px solid #90caf9;
+  border-radius: 16px;
+  box-shadow: 0 8px 28px rgba(34, 90, 152, 0.08);
+}
+
+.edit-modal__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  line-height: 0;
+}
+
+.edit-modal__label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.edit-modal__input {
+  width: 100%;
+  height: 44px;
+  margin-bottom: 22px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 10px;
+  background: #e8f1fb;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: #6b7280;
+  outline: none;
+}
+
+.edit-modal__input:focus {
+  box-shadow: 0 0 0 2px rgba(34, 90, 152, 0.25);
+  color: #111;
+}
+
+.edit-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+  margin-top: 8px;
+}
+
+.edit-modal__btn {
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #225a98;
+  cursor: pointer;
+}
+
 @media (max-width: 960px) {
   .todo-header {
     padding: 20px 24px 8px;

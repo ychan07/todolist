@@ -92,7 +92,7 @@
             </ul>
         </section>
     </main>
-
+    <!--end to do에서 todo로 옮길 시에 뜨는 모달(재황용 예정)-->
     <div class="todo-modal" id="todoModal" hidden>
         <div class="todo-modal__backdrop" data-modal-dismiss></div>
         <div class="todo-modal__dialog">
@@ -101,6 +101,43 @@
             <div class="todo-modal__actions">
                 <button class="todo-modal__btn" type="button" data-modal-dismiss>아니오</button>
                 <button class="todo-modal__btn" type="button" data-modal-confirm>예</button>
+            </div>
+        </div>
+    </div>
+
+    <!--상세보기 모달-->
+    <div class="detail-modal" id="detailModal" hidden>
+        <div class="detail-modal__backdrop" data-detail-close></div>
+        <div class="detail-modal__dialog">
+            <div class="detail-modal__top">
+                <button class="detail-modal__back" type="button" data-detail-close>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M12.5 4.5L7 10l5.5 5.5" stroke="#90CAF9" stroke-width="1.8" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </button>
+                <span class="detail-modal__badge">TO Do</span>
+            </div>
+
+            <div class="detail-modal__field">
+                <div class="detail-modal__label">
+                    <span class="detail-modal__dot"></span>
+                    <span>to do</span>
+                </div>
+                <p class="detail-modal__value" id="detailTitle"></p>
+            </div>
+
+            <div class="detail-modal__field">
+                <div class="detail-modal__label">
+                    <span class="detail-modal__dot"></span>
+                    <span>기한</span>
+                </div>
+                <p class="detail-modal__value" id="detailDue"></p>
+            </div>
+
+            <div class="detail-modal__actions">
+                <button class="detail-modal__edit" type="button">수정</button>
+                <button class="detail-modal__delete" type="button">삭제</button>
             </div>
         </div>
     </div>

@@ -5,24 +5,29 @@ const CHECK_SVG = `
 `;
 //ai로 만든 체크 이미지 svg
 
-
-
-
 //이 파트는 ai에게 문법설명 혹은 레퍼런스를 요구하고 그것을 변경해서 적용하는 식으로 도움을 받음
 const pendingList = document.querySelector('[data-column="pending"] .todo-list');
 const completedList = document.querySelector('[data-column="completed"] .todo-list');
 const modal = document.getElementById("todoModal");
 const modalTitle = document.getElementById("todoModalTitle");
 const modalDesc = document.getElementById("todoModalDesc");
+const detailModal = document.getElementById("detailModal");
+const detailTitle = document.getElementById("detailTitle");
+const detailDue = document.getElementById("detailDue");
 
 let pendingUncheckItem = null; //임시변수
+let detailItem = null; //디테일 모달_임시변수
 
 function getTitle(item) {
   return item.querySelector(".todo-item__title").textContent.trim();
 } //제목 가져오기
 
 function getDue(item) {
-  return item.querySelector(".todo-item__due").textContent.trim()
+  const dueEl = item.querySelector(".todo-item__due");
+  if (dueEl) {
+    return dueEl.textContent.trim();
+  }
+  return item.dataset.due || ""; //폭발 방지, 이렇게 안하면 데이터가 잘못 가져와졌을 때 앱이 터져서 ai에게 물어서 해결
 } //마감시간 가져오기
 
 function setCheckButton(button, done) {
@@ -75,24 +80,51 @@ function openModal(item) {
 function closeModal() {
   pendingUncheckItem = null;
   modal.hidden = true;
-  document.body.classList.remove("todo-modal-open");
+  if (detailModal.hidden) {
+    document.body.classList.remove("todo-modal-open");
+  }
+}
+
+function openDetailModal(item) {
+  detailItem = item;
+  detailTitle.textContent = getTitle(item);
+  detailDue.textContent = getDue(item);
+  detailModal.hidden = false;
+  document.body.classList.add("todo-modal-open");
+}
+
+function closeDetailModal() {
+  detailItem = null;
+  detailModal.hidden = true;
+  if (modal.hidden) {
+    document.body.classList.remove("todo-modal-open");
+  }
 }
 
 document.querySelector(".todo-board").addEventListener("click", (event) => {
   const checkBtn = event.target.closest(".todo-item__check");
-  if (!checkBtn) return;
+  if (checkBtn) {
+    const item = checkBtn.closest(".todo-item");
+    const column = checkBtn.closest("[data-column]").dataset.column;
 
-  const item = checkBtn.closest(".todo-item");
-  const column = checkBtn.closest("[data-column]")?.dataset.column;
+    if (column === "pending") {
+      moveToCompleted(item);
+      return;
+    }
 
-  if (column === "pending") {
-    moveToCompleted(item);
+    if (column === "completed") {
+      openModal(item);
+    }
     return;
   }
 
-  if (column === "completed") {
-    openModal(item);
-  }
+  const titleEl = event.target.closest(".todo-item__title");
+  if (!titleEl) return;
+
+  const column = titleEl.closest("[data-column]").dataset.column;
+  if (column !== "pending") return;
+
+  openDetailModal(titleEl.closest(".todo-item"));
 });
 
 modal.addEventListener("click", (event) => {
@@ -108,8 +140,21 @@ modal.addEventListener("click", (event) => {
   }
 });
 
+detailModal.addEventListener("click", (event) => {
+  if (event.target.closest("[data-detail-close]")) {
+    closeDetailModal();
+  }
+});
+
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && !modal.hidden) {
+  if (event.key !== "Escape") return;
+
+  if (!detailModal.hidden) {
+    closeDetailModal();
+    return;
+  }
+
+  if (!modal.hidden) {
     closeModal();
   }
 });

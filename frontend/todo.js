@@ -1,13 +1,14 @@
+const API_BASE = 'http://127.0.0.1:8000/api';
+
 const CHECK_SVG = `
   <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
     <path d="M3 7.2l2.8 2.8L11 4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
   </svg>
 `;
-//ai로 만든 체크 이미지 svg
 
-//이 파트는 ai에게 문법설명 혹은 레퍼런스를 요구하고 그것을 변경해서 적용하는 식으로 도움을 받음
 const pendingList = document.querySelector('[data-column="pending"] .todo-list');
 const completedList = document.querySelector('[data-column="completed"] .todo-list');
+const failedList = document.querySelector('[data-column="failed"] .todo-list');
 const modal = document.getElementById("todoModal");
 const modalTitle = document.getElementById("todoModalTitle");
 const modalDesc = document.getElementById("todoModalDesc");
@@ -23,12 +24,12 @@ const addModal = document.getElementById("addModal");
 const addTitleInput = document.getElementById("addTitleInput");
 const addDueInput = document.getElementById("addDueInput");
 
-let pendingUncheckItem = null; //모달용 임시변수
-let detailItem = null; //디테일 모달_임시변수
+let pendingUncheckItem = null;
+let detailItem = null;
 
 function anyModalOpen() {
   return !modal.hidden || !detailModal.hidden || !deleteModal.hidden || !editModal.hidden || !addModal.hidden;
-}
+} //flase 혹은 true로 반환
 
 function syncBodyScroll() {
   document.body.classList.toggle("todo-modal-open", anyModalOpen());
@@ -36,22 +37,22 @@ function syncBodyScroll() {
 
 function getTitle(item) {
   return item.querySelector(".todo-item__title").textContent.trim();
-} //제목 가져오기
+}
 
 function getDue(item) {
   const dueEl = item.querySelector(".todo-item__due");
   if (dueEl) {
     return dueEl.textContent.trim();
   }
-  return item.dataset.due || ""; //폭발 방지, 이렇게 안하면 데이터가 잘못 가져와졌을 때 앱이 터져서 ai에게 물어서 해결
-} //마감시간 가져오기
+  return item.dataset.due || "";
+}
 
 function setCheckButton(button, done) {
   button.classList.toggle("todo-item__check--done", done);
   button.innerHTML = done ? CHECK_SVG : "";
 }
 
-function moveToCompleted(item) {
+async function moveToCompleted(item) {
   const due = getDue(item);
   if (due) {
     item.dataset.due = due;
@@ -66,9 +67,24 @@ function moveToCompleted(item) {
   item.classList.add("todo-item--done");
   setCheckButton(item.querySelector(".todo-item__check"), true);
   completedList.appendChild(item);
-}
 
-function moveToPending(item) {
+  const id = item.dataset.id;
+  if (id) {
+    try {
+      await fetch(`${API_BASE}/todos/${id}/`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ status: 'completed' })
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+}
+//무한 재활용 가능?
+
+async function moveToPending(item) {
   item.classList.remove("todo-item--done", "todo-item--failed");
 
   const body = item.querySelector(".todo-item__body");
@@ -82,6 +98,20 @@ function moveToPending(item) {
 
   setCheckButton(item.querySelector(".todo-item__check"), false);
   pendingList.appendChild(item);
+
+  const id = item.dataset.id;
+  if (id) {
+    try {
+      await fetch(`${API_BASE}/todos/${id}/`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ status: 'pending' })
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
 }
 
 function openModal(item) {
@@ -108,7 +138,7 @@ function openDetailModal(item) {
   syncBodyScroll();
   positionAtItem(detailModal.querySelector(".detail-modal__dialog"), item);
 }
-//상세/수정 모달 위치 조정 (ai의 도움을 받음)
+
 function positionAtItem(dialog, item) {
   const column = item.closest(".todo-column");
   const columnRect = column.getBoundingClientRect();
@@ -151,8 +181,21 @@ function closeDeleteModal() {
   syncBodyScroll();
 }
 
-function confirmDelete() {
+async function confirmDelete() {
   if (!detailItem) return;
+
+  const id = detailItem.dataset.id;
+  if (id) {
+    try {
+      await fetch(`${API_BASE}/todos/${id}/`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   detailItem.remove();
   detailItem = null;
   deleteModal.hidden = true;
@@ -188,7 +231,7 @@ function closeEditModal(reopenDetail) {
   syncBodyScroll();
 }
 
-function saveEdit() {
+async function saveEdit() {
   if (!detailItem) return;
 
   const title = editTitleInput.value.trim();
@@ -214,6 +257,20 @@ function saveEdit() {
     delete detailItem.dataset.due;
   }
 
+  const id = detailItem.dataset.id;
+  if (id) {
+    try {
+      await fetch(`${API_BASE}/todos/${id}/`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ title, due_date: due })
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   editModal.hidden = true;
   detailItem = null;
   detailModal.hidden = true;
@@ -226,9 +283,10 @@ function formatDueFromDate(value) {
   return `${year}.${month}.${day}까지`;
 }
 
-function createTodoItem(title, due) {
+function createTodoItem(id, title, due, status = 'pending') {
   const item = document.createElement("li");
   item.className = "todo-item";
+  if (id) item.dataset.id = id;
 
   const body = document.createElement("div");
   body.className = "todo-item__body";
@@ -238,17 +296,27 @@ function createTodoItem(title, due) {
   titleEl.textContent = title;
   body.appendChild(titleEl);
 
-  if (due) {
+  if (due && status !== 'completed') {
     const dueEl = document.createElement("span");
     dueEl.className = "todo-item__due";
     dueEl.textContent = due;
     body.appendChild(dueEl);
+  }
+  if (due) {
     item.dataset.due = due;
   }
 
   const check = document.createElement("button");
   check.className = "todo-item__check";
   check.type = "button";
+
+  if (status === 'completed') {
+    item.classList.add("todo-item--done");
+    setCheckButton(check, true);
+  } else if (status === 'failed') {
+    item.classList.add("todo-item--failed");
+    setCheckButton(check, false);
+  }
 
   item.appendChild(body);
   item.appendChild(check);
@@ -268,7 +336,7 @@ function closeAddModal() {
   syncBodyScroll();
 }
 
-function saveAdd() {
+async function saveAdd() {
   const title = addTitleInput.value.trim();
   if (!title) {
     addTitleInput.focus();
@@ -276,10 +344,68 @@ function saveAdd() {
   }
 
   const due = formatDueFromDate(addDueInput.value);
-  pendingList.appendChild(createTodoItem(title, due));
-  closeAddModal();
+
+  try {
+    const res = await fetch(`${API_BASE}/todos/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ title, due_date: due, status: 'pending' })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      pendingList.appendChild(createTodoItem(data.todo.id, data.todo.title, data.todo.due_date, data.todo.status));
+      closeAddModal();
+    }
+  } catch (err) {
+    console.error(err);
+  }
 }
 
+async function checkAuthAndLoadTodos() {
+  try {
+    const res = await fetch(`${API_BASE}/me/`, { credentials: 'include' });
+    const data = await res.json();
+    if (!data.authenticated) {
+      window.location.href = 'login.html';
+      return;
+    }
+    const nameEl = document.querySelector('.todo-header__name');
+    if (nameEl && data.user) {
+      nameEl.textContent = `${data.user.name}님`;
+    }
+    loadTodos();
+  } catch (err) {
+    console.error('인증 확인 실패:', err);
+  }
+}
+
+async function loadTodos() {
+  try {
+    const res = await fetch(`${API_BASE}/todos/`, { credentials: 'include' });
+    const data = await res.json();
+    if (res.ok && data.todos) {
+      pendingList.innerHTML = '';
+      completedList.innerHTML = '';
+      if (failedList) failedList.innerHTML = '';
+
+      data.todos.forEach(todo => {
+        const item = createTodoItem(todo.id, todo.title, todo.due_date, todo.status);
+        if (todo.status === 'completed') {
+          completedList.appendChild(item);
+        } else if (todo.status === 'failed') {
+          if (failedList) failedList.appendChild(item);
+        } else {
+          pendingList.appendChild(item);
+        }
+      });
+    }
+  } catch (err) {
+    console.error('Todo 로딩 실패:', err);
+  }
+}
+
+// Event Listeners
 document.querySelector(".todo-board").addEventListener("click", (event) => {
   if (event.target.closest(".todo-column__add")) {
     openAddModal();
@@ -404,3 +530,22 @@ document.addEventListener("keydown", (event) => {
     closeModal();
   }
 });
+
+const logoutBtn = document.querySelector('.todo-header__logout');
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    try {
+      await fetch(`${API_BASE}/logout/`, {
+        method: 'POST',
+        credentials: 'include'
+      });
+    } catch (err) {
+      console.error(err);
+    }
+    window.location.href = 'login.html';
+  });
+}
+
+
+checkAuthAndLoadTodos(); //최초 로드

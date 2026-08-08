@@ -19,12 +19,15 @@ const deleteModal = document.getElementById("deleteModal");
 const editModal = document.getElementById("editModal");
 const editTitleInput = document.getElementById("editTitleInput");
 const editDueInput = document.getElementById("editDueInput");
+const addModal = document.getElementById("addModal");
+const addTitleInput = document.getElementById("addTitleInput");
+const addDueInput = document.getElementById("addDueInput");
 
 let pendingUncheckItem = null; //모달용 임시변수
 let detailItem = null; //디테일 모달_임시변수
 
 function anyModalOpen() {
-  return !modal.hidden || !detailModal.hidden || !deleteModal.hidden || !editModal.hidden;
+  return !modal.hidden || !detailModal.hidden || !deleteModal.hidden || !editModal.hidden || !addModal.hidden;
 }
 
 function syncBodyScroll() {
@@ -217,7 +220,72 @@ function saveEdit() {
   syncBodyScroll();
 }
 
+function formatDueFromDate(value) {
+  if (!value) return "";
+  const [year, month, day] = value.split("-");
+  return `${year}.${month}.${day}까지`;
+}
+
+function createTodoItem(title, due) {
+  const item = document.createElement("li");
+  item.className = "todo-item";
+
+  const body = document.createElement("div");
+  body.className = "todo-item__body";
+
+  const titleEl = document.createElement("span");
+  titleEl.className = "todo-item__title";
+  titleEl.textContent = title;
+  body.appendChild(titleEl);
+
+  if (due) {
+    const dueEl = document.createElement("span");
+    dueEl.className = "todo-item__due";
+    dueEl.textContent = due;
+    body.appendChild(dueEl);
+    item.dataset.due = due;
+  }
+
+  const check = document.createElement("button");
+  check.className = "todo-item__check";
+  check.type = "button";
+
+  item.appendChild(body);
+  item.appendChild(check);
+  return item;
+}
+
+function openAddModal() {
+  addTitleInput.value = "";
+  addDueInput.value = "";
+  addModal.hidden = false;
+  syncBodyScroll();
+  addTitleInput.focus();
+}
+
+function closeAddModal() {
+  addModal.hidden = true;
+  syncBodyScroll();
+}
+
+function saveAdd() {
+  const title = addTitleInput.value.trim();
+  if (!title) {
+    addTitleInput.focus();
+    return;
+  }
+
+  const due = formatDueFromDate(addDueInput.value);
+  pendingList.appendChild(createTodoItem(title, due));
+  closeAddModal();
+}
+
 document.querySelector(".todo-board").addEventListener("click", (event) => {
+  if (event.target.closest(".todo-column__add")) {
+    openAddModal();
+    return;
+  }
+
   const checkBtn = event.target.closest(".todo-item__check");
   if (checkBtn) {
     const item = checkBtn.closest(".todo-item");
@@ -298,11 +366,27 @@ editModal.addEventListener("click", (event) => {
   }
 });
 
+addModal.addEventListener("click", (event) => {
+  if (event.target.closest("[data-add-cancel]")) {
+    closeAddModal();
+    return;
+  }
+
+  if (event.target.closest("[data-add-save]")) {
+    saveAdd();
+  }
+});
+
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
 
   if (!deleteModal.hidden) {
     closeDeleteModal();
+    return;
+  }
+
+  if (!addModal.hidden) {
+    closeAddModal();
     return;
   }
 

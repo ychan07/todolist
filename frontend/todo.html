@@ -155,6 +155,35 @@
         </div>
     </div>
 
+    <!--추가 모달-->
+    <div class="edit-modal" id="addModal" hidden>
+        <div class="edit-modal__backdrop" data-add-cancel></div>
+        <div class="edit-modal__dialog">
+            <button class="edit-modal__close" type="button" data-add-cancel>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M4 4l8 8M12 4l-8 8" stroke="#F87171" stroke-width="1.8" stroke-linecap="round" />
+                </svg>
+            </button>
+
+            <label class="edit-modal__label edit-modal__label--dot" for="addTitleInput">TO DO 입력</label>
+            <input class="edit-modal__input" id="addTitleInput" type="text" />
+
+            <label class="edit-modal__label edit-modal__label--dot" for="addDueInput">TO DO 기한 설정</label>
+            <div class="edit-modal__date">
+                <input class="edit-modal__input edit-modal__input--date" id="addDueInput" type="date" />
+                <svg class="edit-modal__chevron" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M3.5 5.25L7 8.75l3.5-3.5" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </div>
+
+            <div class="edit-modal__actions">
+                <button class="edit-modal__btn" type="button" data-add-cancel>취소</button>
+                <button class="edit-modal__btn" type="button" data-add-save>저장 후 닫기</button>
+            </div>
+        </div>
+    </div>
+
     <!--수정 모달-->
     <div class="edit-modal" id="editModal" hidden>
         <div class="edit-modal__backdrop" data-edit-cancel></div>

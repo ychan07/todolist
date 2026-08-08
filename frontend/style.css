@@ -157,7 +157,7 @@ body {
   font-family: inherit;
 }
 
-/* ========== Todo List 페이지 ========== */
+/* todo 페이지 */
 .todo-page {
   min-height: 100vh;
   background: #f8f9fa;
@@ -173,7 +173,7 @@ body {
 
 .todo-header__title {
   font-size: 1.75rem;
-  font-weight: 700;
+  font-weight: 1000;
   letter-spacing: -0.02em;
   color: #111;
 }
@@ -313,7 +313,7 @@ body {
   text-decoration-thickness: 1.5px;
 }
 
-/* ========== 상태 변경 확인 모달 ========== */
+/* 커스텀 모달*/
 .todo-modal-open {
   overflow: hidden;
 }

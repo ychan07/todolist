@@ -7,6 +7,7 @@ todolist 작성 페이지
     -테스크 등록
     -테스크 삭제
     -테스크 체크 시에 end to do로 이동
+    -pending, completed, failed로 상태 분류,표기
 -end to do 
     -체크 풀면 다시 to do로 이동
 

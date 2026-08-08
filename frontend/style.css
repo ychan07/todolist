@@ -393,11 +393,7 @@ body {
 .detail-modal {
   position: fixed;
   inset: 0;
-  z-index: 110;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
+  z-index: 110; /*우선순위*/
 }
 
 .detail-modal__backdrop {
@@ -407,8 +403,8 @@ body {
 }
 
 .detail-modal__dialog {
-  position: relative;
-  width: min(300px, 100%);
+  position: fixed;
+  width: 300px;
   min-height: 420px;
   padding: 18px 22px 22px;
   background: #fff;

@@ -91,6 +91,29 @@ function openDetailModal(item) {
   detailDue.textContent = getDue(item);
   detailModal.hidden = false;
   document.body.classList.add("todo-modal-open");
+  positionDetailModal(item);
+}
+
+function positionDetailModal(item) {
+  const dialog = detailModal.querySelector(".detail-modal__dialog");
+  const column = item.closest(".todo-column");
+  const columnRect = column.getBoundingClientRect();
+  const itemRect = item.getBoundingClientRect();
+  const margin = 12;
+
+  dialog.style.width = `${columnRect.width}px`;
+
+  const dialogHeight = dialog.offsetHeight;
+  let top = itemRect.top;
+  let left = columnRect.left;
+
+  const maxTop = window.innerHeight - dialogHeight - margin;
+  const maxLeft = window.innerWidth - dialog.offsetWidth - margin;
+  top = Math.max(margin, Math.min(top, maxTop));
+  left = Math.max(margin, Math.min(left, maxLeft));
+
+  dialog.style.top = `${top}px`;
+  dialog.style.left = `${left}px`;
 }
 
 function closeDetailModal() {

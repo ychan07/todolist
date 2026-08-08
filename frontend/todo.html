@@ -137,7 +137,20 @@
 
             <div class="detail-modal__actions">
                 <button class="detail-modal__edit" type="button">수정</button>
-                <button class="detail-modal__delete" type="button">삭제</button>
+                <button class="detail-modal__delete" type="button" id="detailDeleteBtn">삭제</button>
+            </div>
+        </div>
+    </div>
+
+    <!--삭제 확인 모달-->
+    <div class="todo-modal" id="deleteModal" hidden>
+        <div class="todo-modal__backdrop" data-delete-cancel></div>
+        <div class="todo-modal__dialog">
+            <p class="todo-modal__title">정말로 삭제하시겠습니까?</p>
+            <p class="todo-modal__desc">삭제후에는 복구하기 어렵습니다.</p>
+            <div class="todo-modal__actions">
+                <button class="todo-modal__btn todo-modal__btn--muted" type="button" data-delete-cancel>취소</button>
+                <button class="todo-modal__btn todo-modal__btn--danger" type="button" data-delete-confirm>삭제하기</button>
             </div>
         </div>
     </div>

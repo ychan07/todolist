@@ -14,9 +14,19 @@ const modalDesc = document.getElementById("todoModalDesc");
 const detailModal = document.getElementById("detailModal");
 const detailTitle = document.getElementById("detailTitle");
 const detailDue = document.getElementById("detailDue");
+const detailDeleteBtn = document.getElementById("detailDeleteBtn");
+const deleteModal = document.getElementById("deleteModal");
 
-let pendingUncheckItem = null; //임시변수
+let pendingUncheckItem = null; //모달용 임시변수
 let detailItem = null; //디테일 모달_임시변수
+
+function anyModalOpen() {
+  return !modal.hidden || !detailModal.hidden || !deleteModal.hidden;
+}
+
+function syncBodyScroll() {
+  document.body.classList.toggle("todo-modal-open", anyModalOpen());
+}
 
 function getTitle(item) {
   return item.querySelector(".todo-item__title").textContent.trim();
@@ -74,26 +84,25 @@ function openModal(item) {
   modalTitle.textContent = `${title} 를(을) to do 상태로 바꾸시겠습니까?`;
   modalDesc.textContent = `바꿀 경우 ${title} 는(은) to do목록에 표시됩니다.`;
   modal.hidden = false;
-  document.body.classList.add("todo-modal-open");
+  syncBodyScroll();
 }
 
 function closeModal() {
   pendingUncheckItem = null;
   modal.hidden = true;
-  if (detailModal.hidden) {
-    document.body.classList.remove("todo-modal-open");
-  }
+  syncBodyScroll();
 }
 
 function openDetailModal(item) {
   detailItem = item;
   detailTitle.textContent = getTitle(item);
   detailDue.textContent = getDue(item);
+  detailDeleteBtn.classList.remove("is-muted");
   detailModal.hidden = false;
-  document.body.classList.add("todo-modal-open");
+  syncBodyScroll();
   positionDetailModal(item);
 }
-
+//상세보기 모달의 위치를 조정하는 함수, 생각보다 위치 조정이 생각대로 바뀌지 않아서 함수를 새롭게 만듬(ai의 도움을 받음)
 function positionDetailModal(item) {
   const dialog = detailModal.querySelector(".detail-modal__dialog");
   const column = item.closest(".todo-column");
@@ -117,11 +126,33 @@ function positionDetailModal(item) {
 }
 
 function closeDetailModal() {
+  closeDeleteModal();
   detailItem = null;
+  detailDeleteBtn.classList.remove("is-muted");
   detailModal.hidden = true;
-  if (modal.hidden) {
-    document.body.classList.remove("todo-modal-open");
-  }
+  syncBodyScroll();
+}
+
+function openDeleteModal() {
+  detailDeleteBtn.classList.add("is-muted");
+  deleteModal.hidden = false;
+  syncBodyScroll();
+}
+
+function closeDeleteModal() {
+  deleteModal.hidden = true;
+  detailDeleteBtn.classList.remove("is-muted");
+  syncBodyScroll();
+}
+
+function confirmDelete() {
+  if (!detailItem) return;
+  detailItem.remove();
+  detailItem = null;
+  deleteModal.hidden = true;
+  detailDeleteBtn.classList.remove("is-muted");
+  detailModal.hidden = true;
+  syncBodyScroll();
 }
 
 document.querySelector(".todo-board").addEventListener("click", (event) => {
@@ -164,13 +195,38 @@ modal.addEventListener("click", (event) => {
 });
 
 detailModal.addEventListener("click", (event) => {
+  if (event.target.closest(".detail-modal__delete")) {
+    openDeleteModal();
+    return;
+  }
+
   if (event.target.closest("[data-detail-close]")) {
+    if (!deleteModal.hidden) {
+      closeDeleteModal();
+      return;
+    }
     closeDetailModal();
+  }
+});
+
+deleteModal.addEventListener("click", (event) => {
+  if (event.target.closest("[data-delete-cancel]")) {
+    closeDeleteModal();
+    return;
+  }
+
+  if (event.target.closest("[data-delete-confirm]")) {
+    confirmDelete();
   }
 });
 
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
+
+  if (!deleteModal.hidden) {
+    closeDeleteModal();
+    return;
+  }
 
   if (!detailModal.hidden) {
     closeDetailModal();

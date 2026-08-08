@@ -336,6 +336,10 @@ body {
   padding: 24px;
 }
 
+#deleteModal {
+  z-index: 120;
+}
+
 .todo-modal__backdrop {
   position: absolute;
   inset: 0;
@@ -383,6 +387,14 @@ body {
   font-weight: 500;
   color: #225a98;
   cursor: pointer;
+}
+
+.todo-modal__btn--muted {
+  color: #9ca3af;
+}
+
+.todo-modal__btn--danger {
+  color: #f87171;
 }
 
 /* 테스크 상세 모달 */
@@ -508,6 +520,10 @@ body {
 
 .detail-modal__delete {
   color: #f87171;
+}
+
+.detail-modal__delete.is-muted {
+  color: #9ca3af;
 }
 
 @media (max-width: 960px) {

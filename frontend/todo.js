@@ -161,12 +161,16 @@ function confirmDelete() {
 function openEditModal() {
   if (!detailItem) return;
 
+  const dialog = editModal.querySelector(".edit-modal__dialog");
+  dialog.style.top = "";
+  dialog.style.left = "";
+  dialog.style.width = "";
+
   editTitleInput.value = getTitle(detailItem);
   editDueInput.value = getDue(detailItem);
   detailModal.hidden = true;
   editModal.hidden = false;
   syncBodyScroll();
-  positionAtItem(editModal.querySelector(".edit-modal__dialog"), detailItem);
   editTitleInput.focus();
 }
 

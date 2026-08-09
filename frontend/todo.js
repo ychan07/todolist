@@ -1,4 +1,4 @@
-const API_BASE = 'http://127.0.0.1:8000/api';
+const API_BASE = '/api';
 
 const CHECK_SVG = `
   <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -367,7 +367,7 @@ async function checkAuthAndLoadTodos() {
     const res = await fetch(`${API_BASE}/me/`, { credentials: 'include' });
     const data = await res.json();
     if (!data.authenticated) {
-      window.location.href = 'login.html';
+      window.location.href = '/';
       return;
     }
     const nameEl = document.querySelector('.todo-header__name');
@@ -543,7 +543,7 @@ if (logoutBtn) {
     } catch (err) {
       console.error(err);
     }
-    window.location.href = 'login.html';
+    window.location.href = '/';
   });
 }
 

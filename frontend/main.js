@@ -1,4 +1,4 @@
-const API_BASE = 'http://127.0.0.1:8000/api';
+const API_BASE = '/api';
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.querySelector('main.login form');
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await res.json();
                 if (res.ok && data.success) {
                     alert('회원가입이 완료되었습니다!');
-                    window.location.href = 'todo.html';
+                    window.location.href = '/todo/';
                 } else {
                     alert(data.error || '회원가입에 실패했습니다.');
                 }
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const data = await res.json();
                 if (res.ok && data.success) {
-                    window.location.href = 'todo.html';
+                    window.location.href = '/todo/';
                 } else {
                     alert(data.error || '로그인에 실패했습니다.');
                 }

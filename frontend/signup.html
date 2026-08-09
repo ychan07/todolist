@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
 <!--로그인 폼 재활용-->
@@ -8,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Chocolate+Classical+Sans&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 
 <body>
@@ -32,9 +33,12 @@
             </div>
 
             <button class="btn btn--primary login__submit" type="submit">회원가입</button>
+            <div style="margin-top: 16px; text-align: center;">
+                <a href="/login/" style="color: #225A98; text-decoration: none; font-size: 14px;">로그인 화면으로 돌아가기</a>
+            </div>
         </form>
     </main>
-    <script src="main.js"></script>
+    <script src="{% static 'main.js' %}"></script>
 </body>
 
 </html>

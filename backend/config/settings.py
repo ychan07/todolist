@@ -7,7 +7,11 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+try:
+    from dotenv import load_dotenv
+    load_dotenv(BASE_DIR / '.env', override=True)
+except ImportError:
+    pass
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-py-l0%8@)=kx0e370$uj&w_xl(%#6snk)xl$pjsca7i#=$n*d-')
 
